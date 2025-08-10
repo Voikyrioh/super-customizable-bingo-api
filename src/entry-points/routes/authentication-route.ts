@@ -1,24 +1,27 @@
 import type { FastifyInstance } from 'fastify'
-import { z } from 'zod/v4'
+import { LoggedUser, type LoginForm, loginSchema } from "../../domain/entities/auth";
 import { Router } from '../class/router'
-import { BearerToken } from '../class/security/bearer-token'
+import { JsonWebTokenManager } from "../class/json-web-token";
+import { ulid } from "ulid";
 
 /**
- * Authentications routes
+ * Authentication routes
  */
 export default (instance: FastifyInstance) => {
-    new Router(instance, '/')
-        .addSecurity(new BearerToken('token'))
-        .createRoute<null, {status: string}>(
-            'get',
-            '',
-            null,
-            async () => { return { status: 'ok' } }
-        )
-        .createRoute<{myName: string}, string>(
+    new Router(instance)
+        .createRoute<LoginForm, {status: string}>(
             'post',
-            '',
-            z.object({myName: z.string()}),
-            async (request) => { return `your name is ${request.body.myName}` }
+            'login',
+            loginSchema,
+            async (request, reply) => {
+                const jwtm = await JsonWebTokenManager.getInstance()
+                const token = await jwtm.signToken<LoggedUser>({
+                    username: request.body.username,
+                    permissions: [],
+                    user_id: ulid()
+                })
+
+                return reply.status(200).header('Set-Cookie', token).send()
+            }
         )
 }

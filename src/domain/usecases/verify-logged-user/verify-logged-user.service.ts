@@ -1,7 +1,7 @@
+import { AppError } from "@errors/app.error";
+import Logger from "@logger";
 import { JsonWebTokenManager } from "../../../entry-points/class/json-web-token";
 import type { LoggedUser } from "../../entities/auth";
-import Logger from "@logger";
-import { AppError } from "@errors/app.error";
 
 export async function decodeLoggedUserJWT(jwt: string): Promise<LoggedUser> {
     try {

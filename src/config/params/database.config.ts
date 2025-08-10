@@ -1,4 +1,4 @@
-import { z } from "zod/v4/index";
+import { z } from "zod/v4";
 import { customZod } from "../../../libraries/custom-zod-types";
 
 export type DatabaseConfigType = {
@@ -38,7 +38,7 @@ const config = {
         name: 'PG_PASSWORD',
         description: 'Password of postgres server',
         default: {
-            _: null,
+            _: '',
         },
         validator: z.string(),
     },

@@ -1,39 +1,43 @@
 import { readFile } from "node:fs/promises";
 import * as path from "node:path";
 import Config from "@config";
-import jose, { type CryptoKey, type JWTPayload } from "jose";
+import { type CryptoKey, type JWTPayload, importPKCS8, EncryptJWT, jwtDecrypt, importSPKI } from "jose";
 
 const JWT_EXPIRATION_TIME = 60*1000
 
 export class JsonWebTokenManager {
-    static instance: JsonWebTokenManager;
-    #key: CryptoKey;
+    static instance: JsonWebTokenManager
+    #privateKey: CryptoKey
+    #publicKey: CryptoKey
 
     static async getInstance(): Promise<JsonWebTokenManager> {
         if (!JsonWebTokenManager.instance) {
-            const pk = await readFile(path.join(__dirname ,Config.Server.PrivateKeyURL))
-            const key = await jose.importPKCS8( pk.toString(), Config.Server.PrivateKeyAlgorithm);
+            const privk = await readFile(path.join(__dirname, '../../../' ,Config.Server.PrivateKeyDirectory))
+            const pubk = await readFile(path.join(__dirname, '../../../' ,Config.Server.PublicKeyDirectory))
+            const pub = await importSPKI( pubk.toString(), Config.Server.KeyAlgorithm)
+            const priv = await importPKCS8( privk.toString(), Config.Server.KeyAlgorithm)
 
-            JsonWebTokenManager.instance = new JsonWebTokenManager(key);
+            JsonWebTokenManager.instance = new JsonWebTokenManager(pub, priv)
         }
         return JsonWebTokenManager.instance;
     }
 
-    constructor(key: CryptoKey) {
-        this.#key = key;
+    constructor(pub: CryptoKey, priv: CryptoKey) {
+        this.#publicKey = pub;
+        this.#privateKey = priv;
     }
 
     async signToken<T extends Record<string, unknown>>(data: T): Promise<string> {
-        return new jose.EncryptJWT(data)
+        return new EncryptJWT(data)
             .setProtectedHeader({ alg: 'RSA-OAEP-256', enc: 'A256GCM' })
             .setIssuer('super-customizable-bingo-api')
             .setIssuedAt(new Date())
             .setExpirationTime(new Date(Date.now() + JWT_EXPIRATION_TIME))
-            .encrypt(this.#key);
+            .encrypt(this.#publicKey)
     }
 
     async decryptToken<T extends Record<string, unknown>>(token: string): Promise<T & JWTPayload> {
-        const decodedToken = await jose.jwtDecrypt<T>(token, this.#key)
+        const decodedToken = await jwtDecrypt<T>(token, this.#privateKey)
 
         return decodedToken.payload
     }

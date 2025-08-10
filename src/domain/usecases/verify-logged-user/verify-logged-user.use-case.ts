@@ -1,10 +1,10 @@
 import type { LoggedUser } from "../../entities/auth";
-import { decodeLoggedUserJWT } from "./verifry-logged-user.service";
 import { assertJwtToken, assertLoggedUser } from "./verify-logged-user.dto";
+import { decodeLoggedUserJWT } from "./verify-logged-user.service";
 
 export async function verifyLoggedUserUseCase(jwt: string): Promise<LoggedUser> {
     const validJwt = assertJwtToken(jwt)
-    const decodedJwt = decodeLoggedUserJWT(validJwt)
+    const decodedJwt = await decodeLoggedUserJWT(validJwt)
 
     return assertLoggedUser(decodedJwt)
 }

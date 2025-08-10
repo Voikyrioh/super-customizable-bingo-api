@@ -4,8 +4,7 @@ import { handleHttpErrors } from '@errors/handle-http-errors'
 import Logger from '@logger'
 import Fastify, { type FastifyInstance, type FastifyReply, type FastifyRequest } from 'fastify'
 import { loggerOptions } from '../libraries/logger/source/logger'
-import { exampleRoute } from './entry-points/routes'
-import authenticationRoute from "./entry-points/routes/authentication-route";
+import { authenticationRoute, userRoute } from './entry-points/routes'
 
 function handleErrorMiddleware(error: unknown, _: FastifyRequest, reply: FastifyReply) {
     const [status, response] = handleHttpErrors(error).toResponse();
@@ -24,8 +23,8 @@ class Server {
         });
         this.#app.setErrorHandler(handleErrorMiddleware)
 
-        this.#app.register(exampleRoute, { prefix: '/api/v1' })
-        this.#app.register(authenticationRoute, { prefix: '/api/v1/auth' })
+        this.#app.register(authenticationRoute, { prefix: '/api/v1/auth/' })
+        this.#app.register(userRoute, { prefix: '/api/v1/user/' })
     }
 
     async start() {
