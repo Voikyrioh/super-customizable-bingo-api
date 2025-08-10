@@ -2,7 +2,7 @@ FROM node:24-alpine AS BUILDER
 
 # 🐋 Labels for github packages
 LABEL org.opencontainers.image.source=$PROJECT_DOCKER_URL
-LABEL org.opencontainers.image.description="Voiky's Web API Boilerplate"
+LABEL org.opencontainers.image.description="Super Bingo API"
 LABEL org.opencontainers.image.licenses=MIT
 
 # 📁 Copy of source files

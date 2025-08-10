@@ -1,6 +1,6 @@
 services:
   web:
-    container_name: example-service
+    container_name: super-bingo-api
     build: .
     ports:
       - "3000:8080"

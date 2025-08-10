@@ -1,11 +1,16 @@
 {
-  "name": "voiky-s-web-api-boilerplate",
+  "name": "super-customizable-bingo-api",
   "version": "0.1.0",
   "main": "index.ts",
   "scripts": {
     "dev": "tsx --tsconfig=tsconfig.json index.ts",
+    "generate-keys": "bash ./scripts/create-signing-keys.bash",
     "test": "mocha",
     "test:watch": "mocha --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Voikyrioh/super-customizable-bingo-api"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +21,7 @@
   },
   "dependencies": {
     "fastify": "^5.4.0",
+    "jose": "^6.0.12",
     "pino": "^9.7.0",
     "pino-pretty": "^13.0.0",
     "zod": "^4.0.5"

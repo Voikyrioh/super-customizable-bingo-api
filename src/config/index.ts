@@ -1,7 +1,9 @@
 import { generateConfig } from './generate-config'
-import ServerConfig from './params/server.config'
+import DatabaseConfig, { type DatabaseConfigType } from "./params/database.config";
+import ServerConfig, { type ServerConfigType } from './params/server.config'
 
 export default {
-    Server: generateConfig<typeof ServerConfig, { Host: string, Port: number }>(ServerConfig)
+    Server: generateConfig<typeof ServerConfig, ServerConfigType>(ServerConfig),
+    Database: generateConfig<typeof DatabaseConfig, DatabaseConfigType>(DatabaseConfig)
 }
 

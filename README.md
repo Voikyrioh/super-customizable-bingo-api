@@ -1,6 +1,5 @@
-# Voiky's API Boilerplate
-
-A personal boilerplate to quickly bootstrap Web API services using modern technologies and best practices.
+# Super bingo API
+API for super bingo website
 
 ## 🚀 Features
 
@@ -45,11 +44,11 @@ npm start
 ## 🐳 Docker
 Build the Docker image:
 ``` bash
-docker build -t my-api-service .
+docker build -t super-bingo-api .
 ```
 Run the container:
 ``` bash
-docker run -p 3000:3000 my-api-service
+docker run -p 3000:3000 super-bingo-api
 ```
 ## 📝 Project Structure
 ``` 
@@ -60,7 +59,9 @@ src/
   ├── types/       # TypeScript type definitions
   └── server.ts    # Server entry point
 ```
+
 ## 🤝 Contributing
 Feel free to submit issues and pull requests.
+
 ## 📄 License
 This project is licensed under the MIT License - see the LICENSE file for details.
