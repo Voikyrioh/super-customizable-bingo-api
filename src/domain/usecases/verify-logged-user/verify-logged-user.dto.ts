@@ -1,5 +1,5 @@
 import { z } from "zod/v4";
-import { type LoggedUser, loggedUserSchema } from "../../entities/auth";
+import { type LoggedUser, loggedUserSchema } from "../../entities/authentication";
 
 export function assertJwtToken(jwt: string) {
     return z.string().parse(jwt)

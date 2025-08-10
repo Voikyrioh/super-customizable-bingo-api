@@ -22,15 +22,15 @@ const config = {
         name: 'PG_HOST',
         description: 'Host of postgres server',
         default: {
-            _: '127.0.0.1',
+            _: 'localhost',
         },
-        validator: z.union([z.ipv4(), z.url(), z.undefined()]),
+        validator: z.string(),
     },
     PostgresUser: {
         name: 'PG_USER',
         description: 'User of postgres server',
         default: {
-            _: 'postgres',
+            _: 'admin',
         },
         validator: z.string(),
     },
@@ -38,7 +38,7 @@ const config = {
         name: 'PG_PASSWORD',
         description: 'Password of postgres server',
         default: {
-            _: '',
+            _: 'password',
         },
         validator: z.string(),
     },
@@ -46,7 +46,7 @@ const config = {
         name: 'PG_DATABASE',
         description: 'Database name',
         default: {
-            _: 'postgres',
+            _: 'bingo',
         },
         validator: z.string(),
     },

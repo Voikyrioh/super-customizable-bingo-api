@@ -1,10 +1,9 @@
 import { ErrorsCodes, HttpCodes, HttpError } from '@errors/http.error'
-import Logger from "@logger";
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { verifyLoggedUserUseCase } from "../../../domain/usecases/verify-logged-user/verify-logged-user.use-case";
+import { verifyLoggedUserUsecase } from "../../../domain/usecases/verify-logged-user/verify-logged-user.usecase";
 import { BaseSecurity } from './base-security'
 import { errors } from "jose";
-import type { LoggedUser } from "../../../domain/entities/auth";
+import type { LoggedUser } from "../../../domain/entities/authentication";
 
 export type AuthenticatedRequest = { authenticatedUser: LoggedUser }
 
@@ -27,7 +26,7 @@ export class JWTToken extends BaseSecurity {
 
         if (type === 'Bearer' && token) {
             try {
-                const authenticatedUser = await verifyLoggedUserUseCase(token)
+                const authenticatedUser = await verifyLoggedUserUsecase(token)
                 Object.assign(request, {authenticatedUser})
                 return null
             } catch ( e ) {

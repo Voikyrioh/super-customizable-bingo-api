@@ -4,6 +4,7 @@ import { handleHttpErrors } from '@errors/handle-http-errors'
 import Logger from '@logger'
 import Fastify, { type FastifyInstance, type FastifyReply, type FastifyRequest } from 'fastify'
 import { loggerOptions } from '../libraries/logger/source/logger'
+import sql from "./access/database/postgres";
 import { authenticationRoute, userRoute } from './entry-points/routes'
 
 function handleErrorMiddleware(error: unknown, _: FastifyRequest, reply: FastifyReply) {
@@ -29,6 +30,8 @@ class Server {
 
     async start() {
         try {
+           await sql`select 1 as test`
+           Logger.info(`Database connection successful`)
            await this.#app.listen({ port: Config.Server.Port, host: Config.Server.Host })
         } catch (err) {
             Logger.fatal(`Unhandled fatal error : ${inspect(err)}`)

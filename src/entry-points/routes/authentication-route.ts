@@ -1,27 +1,32 @@
 import type { FastifyInstance } from 'fastify'
-import { LoggedUser, type LoginForm, loginSchema } from "../../domain/entities/auth";
+import { type LoginEntity, loginSchema, type RegistrationEntity } from "../../domain/entities/authentication";
+import { logInUseCase } from "../../domain/usecases/log-in/log-in.usecase";
+import { signUpUseCase } from "../../domain/usecases/sign-up/sign-up.usecase";
 import { Router } from '../class/router'
-import { JsonWebTokenManager } from "../class/json-web-token";
-import { ulid } from "ulid";
+import { registrationValidation } from "../validation/authentication.validator";
 
 /**
  * Authentication routes
  */
 export default (instance: FastifyInstance) => {
     new Router(instance)
-        .createRoute<LoginForm, {status: string}>(
+        .createRoute<LoginEntity, void>(
             'post',
             'login',
             loginSchema,
             async (request, reply) => {
-                const jwtm = await JsonWebTokenManager.getInstance()
-                const token = await jwtm.signToken<LoggedUser>({
-                    username: request.body.username,
-                    permissions: [],
-                    user_id: ulid()
-                })
+                const token = await logInUseCase(request.body)
 
                 return reply.status(200).header('Set-Cookie', token).send()
+            }
+        ).createRoute<RegistrationEntity, void>(
+            'post',
+            'signup',
+            registrationValidation,
+            async (request, reply) => {
+                await signUpUseCase(request.body)
+
+                return reply.status(200)
             }
         )
 }

@@ -1,5 +1,5 @@
-import type { FastifyInstance, FastifyRequest } from 'fastify'
-import type { LoggedUser } from "../../domain/entities/auth";
+import type { FastifyInstance } from 'fastify'
+import type { LoggedUser } from "../../domain/entities/authentication";
 import { Router } from '../class/router'
 import { type AuthenticatedRequest, JWTToken } from "../class/security/jwt-token";
 
