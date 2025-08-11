@@ -17,9 +17,9 @@ export class Accounts {
         return account.at(0)
     }
 
-    async insert(accountId: string, password: string, userId: string): Promise<boolean> {
+    async insert(accountId: string, password: string, salt: string, userId: string): Promise<boolean> {
         const [accountCreated] = await sql`
-            INSERT INTO accounts (account_id, password, user_id) VALUES (${accountId}, ${password}, ${userId}) returning account_id
+            INSERT INTO accounts (account_id, password, salt, user_id) VALUES (${accountId}, ${password}, ${salt}, ${userId}) returning account_id
         `
         return !!accountCreated
     }

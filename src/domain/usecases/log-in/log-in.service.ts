@@ -5,8 +5,10 @@ import type { User } from "../../entities/user";
 import { repository } from "../../../access/repository/repository";
 import { ErrorsCodes, HttpCodes, HttpError } from "@errors/http.error";
 
-export async function hashPassword(password: string): Promise<string> {
-    return password
+export async function findAccountWithID(accountId: string): Promise<Account|null> {
+    const account = await repository.accounts.retrieveByAccountId(accountId);
+
+    return account;
 }
 
 export async function verifyAccount(account_id: string, password: string): Promise<Account> {

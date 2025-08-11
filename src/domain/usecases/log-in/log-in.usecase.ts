@@ -1,9 +1,11 @@
 import type { LoginEntity } from "../../entities/authentication";
-import { generateJsonWebToken, hashPassword, retrieveUser, verifyAccount } from "./log-in.service";
+import { findAccountWithID, generateJsonWebToken, retrieveUser, verifyAccount } from "./log-in.service";
+import { encryptPassword } from "../../../logic/encrypt-password";
 
 export async function logInUseCase(loginRequest: LoginEntity): Promise<string> {
-    const hashedPassword = await hashPassword(loginRequest.password)
-    const account = await verifyAccount(loginRequest.username, hashedPassword)
+    const probableAccount = await findAccountWithID(loginRequest.username)
+    const hashedPassword = encryptPassword(loginRequest.password, probableAccount?.salt ?? null)
+    const account = await verifyAccount(loginRequest.username, hashedPassword.hash)
     const user = await retrieveUser(account.user_id)
     const token = await generateJsonWebToken({
         username: user.username,
