@@ -1,6 +1,6 @@
 module.exports = {
     apps : [{
-        name: "example-service",
+        name: "super bing api",
         script: "./index.js",
         exec_mode: "cluster",
         instances: "max",

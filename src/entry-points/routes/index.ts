@@ -1,3 +1,4 @@
-import exampleRoute from './example-route'
+import authenticationRoute from './authentication-route'
+import userRoute from './user-route'
 
-export { exampleRoute }
+export { authenticationRoute, userRoute }

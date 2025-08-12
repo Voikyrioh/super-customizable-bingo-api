@@ -1,10 +1,12 @@
 import { inspect } from 'node:util'
 import Config from '@config'
 import { handleHttpErrors } from '@errors/handle-http-errors'
+import cors from '@fastify/cors'
 import Logger from '@logger'
 import Fastify, { type FastifyInstance, type FastifyReply, type FastifyRequest } from 'fastify'
 import { loggerOptions } from '../libraries/logger/source/logger'
-import { exampleRoute } from './entry-points/routes'
+import sql from "./access/database/postgres";
+import { authenticationRoute, userRoute } from './entry-points/routes'
 
 function handleErrorMiddleware(error: unknown, _: FastifyRequest, reply: FastifyReply) {
     const [status, response] = handleHttpErrors(error).toResponse();
@@ -21,13 +23,23 @@ class Server {
             },
             disableRequestLogging: true,
         });
+        this.#app.register(cors, {
+            allowedHeaders: ['Authorization', 'Content-Type'],
+            methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+            origin: Config.Server.Host === 'localhost' ? true : Config.Server.AllowedOrigins,
+            credentials: true
+        })
         this.#app.setErrorHandler(handleErrorMiddleware)
 
-        this.#app.register(exampleRoute, { prefix: '/api/v1' })
+
+        this.#app.register(authenticationRoute, { prefix: '/api/v1/auth/' })
+        this.#app.register(userRoute, { prefix: '/api/v1/user/' })
     }
 
     async start() {
         try {
+           await sql`select 1 as test`
+           Logger.info(`Database connection successful`)
            await this.#app.listen({ port: Config.Server.Port, host: Config.Server.Host })
         } catch (err) {
             Logger.fatal(`Unhandled fatal error : ${inspect(err)}`)
