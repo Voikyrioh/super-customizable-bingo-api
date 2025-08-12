@@ -1,3 +1,4 @@
+import { HttpCodes } from "@errors/http.error";
 import type { FastifyInstance } from 'fastify'
 import { type LoginEntity, loginSchema, type RegistrationEntity } from "../../domain/entities/authentication";
 import { logInUseCase } from "../../domain/usecases/log-in/log-in.usecase";
@@ -17,7 +18,7 @@ export default (instance: FastifyInstance) => {
             async (request, reply) => {
                 const token = await logInUseCase(request.body)
 
-                return reply.status(200).header('Set-Cookie', token).send()
+                return reply.status(200).send({token})
             }
         ).createRoute<RegistrationEntity, void>(
             'post',
@@ -26,7 +27,7 @@ export default (instance: FastifyInstance) => {
             async (request, reply) => {
                 await signUpUseCase(request.body)
 
-                return reply.status(200)
+               return reply.status(HttpCodes.CREATED).send()
             }
         )
 }

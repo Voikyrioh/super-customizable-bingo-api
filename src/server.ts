@@ -1,6 +1,7 @@
 import { inspect } from 'node:util'
 import Config from '@config'
 import { handleHttpErrors } from '@errors/handle-http-errors'
+import cors from '@fastify/cors'
 import Logger from '@logger'
 import Fastify, { type FastifyInstance, type FastifyReply, type FastifyRequest } from 'fastify'
 import { loggerOptions } from '../libraries/logger/source/logger'
@@ -22,7 +23,14 @@ class Server {
             },
             disableRequestLogging: true,
         });
+        this.#app.register(cors, {
+            allowedHeaders: ['Authorization', 'Content-Type'],
+            methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+            origin: Config.Server.Host === 'localhost' ? true : Config.Server.AllowedOrigins,
+            credentials: true
+        })
         this.#app.setErrorHandler(handleErrorMiddleware)
+
 
         this.#app.register(authenticationRoute, { prefix: '/api/v1/auth/' })
         this.#app.register(userRoute, { prefix: '/api/v1/user/' })

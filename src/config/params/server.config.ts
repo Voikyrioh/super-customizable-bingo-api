@@ -2,22 +2,31 @@ import { z } from 'zod/v4'
 import { customZod } from '../../../libraries/custom-zod-types'
 
 export type ServerConfigType = {
-    Host: string,
-    Port: number
+    AllowedOrigins: string[] | string;
+    Host: string;
+    Port: number;
     KeyAlgorithm: string;
     PublicKeyDirectory: string;
     PrivateKeyDirectory: string;
 }
 
 export default {
+    AllowedOrigins: {
+        name: 'ALLOWED_ORIGINS',
+        description: 'allowed origins for cors',
+        default: {
+            _: 'localhost,127.0.0.1',
+        },
+        validator: z.preprocess((val: string|undefined) =>  val?.split(','), z.array(z.string()).default([])),
+    },
     Host: {
         name: 'HOSTNAME',
         description: 'Who to listen to',
         default: {
-            _: '127.0.0.1',
+            _: 'localhost',
             production: '0.0.0.0',
         },
-        validator: z.ipv4(),
+        validator: z.string(),
     },
     Port: {
         name: 'PORT',

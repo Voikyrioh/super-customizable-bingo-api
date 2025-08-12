@@ -1,6 +1,6 @@
+import { encryptPassword } from "../../../logic/encrypt-password";
 import type { LoginEntity } from "../../entities/authentication";
 import { findAccountWithID, generateJsonWebToken, retrieveUser, verifyAccount } from "./log-in.service";
-import { encryptPassword } from "../../../logic/encrypt-password";
 
 export async function logInUseCase(loginRequest: LoginEntity): Promise<string> {
     const probableAccount = await findAccountWithID(loginRequest.username)
